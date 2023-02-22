@@ -52,41 +52,6 @@ setup_cron() {
 }
 
 
-setup_msmtp() {
-    local target_conf
-
-    target_conf='/etc/msmtprc'
-
-    rm -f /usr/sbin/sendmail || fail "rm sendmail failed w/ $?"
-    ln -s /usr/bin/msmtp /usr/sbin/sendmail || fail "linking sendmail failed w/ $?"
-
-    if [[ -f "$MSMTPRC" && -s "$MSMTPRC" ]]; then
-        cat -- "$MSMTPRC" > "$target_conf"
-    else
-        cat > "$target_conf" <<EOF
-### Auto-generated at container startup ###
-defaults
-auth ${SMTP_AUTH:-on}
-tls ${SMTP_TLS:-on}
-tls_starttls ${SMTP_STARTTLS:-on}
-#tls_certcheck ${SMTP_TLSCERTCHECK:-on}
-tls_trust_file /etc/ssl/certs/ca-certificates.crt
-logfile /var/log/msmtp.log
-protocol smtp
-port ${SMTP_PORT:-587}
-
-account common
-host ${SMTP_HOST}
-user ${SMTP_USER}
-password ${SMTP_PASS}
-
-# set default account:
-account default : common
-EOF
-    fi
-}
-
-
 setup_logrotate() {
     local opt rotate interval size name pattern rotate_confdir target_conf OPTIND
 
