@@ -24,6 +24,8 @@ RUN apk update && \
         msmtp \
         logrotate && \
     useradd -u 1000 -U -G users -d /config -s /bin/false abc && \
+    mkdir /config/ && \
+    chmod -R 777 /config/ && \
     chown -R root:root /usr/local/sbin/ && \
     chmod -R 755 /usr/local/sbin/ && \
     ln -s /usr/local/sbin/setup.sh /setup.sh && \
